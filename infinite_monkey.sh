@@ -1,21 +1,30 @@
 #!/bin/bash
 
-INCLUDE_DIRECTORIES="-I.."
+INCLUDE_DIRECTORIES=( ".." )
 
-CFLAGS="-Wall -Werror -Wextra -std=c++98 $INCLUDE_DIRECTORIES"
 
 trap "pkill fifodiff; pkill infinite_ft_containers; pkill infinite_std_containers; rm .stdpipe .ftpipe 2>/dev/null" INT
+
+CFLAGS="-Wall -Werror -Wextra -std=c++98"
+
+for i in "$INCLUDE_DIRECTORIES"
+do
+	CFLAGS+=" -I"$i
+done
+
+
 
 check_last_change()
 {
   ret=0
-  for file in $(find ../srcs . | grep .hpp)
+  for file in $( find $INCLUDE_DIRECTORIES . -maxdepth 1 | grep '.hpp\|.hpp')
   do
     tmp="$(stat -c "%Y" $file )"
     : $(( ret = tmp > ret ? tmp : ret ))
   done
   echo $ret
 }
+
 
 if [  ! -x fifodiff ] || [ "$(stat -c %Y fifodiff.cpp)" -ge "$(stat -c %Y fifodiff)" ]
 then
