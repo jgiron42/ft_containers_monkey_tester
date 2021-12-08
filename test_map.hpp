@@ -2,6 +2,7 @@
 #include "pair.hpp"
 #include <set>
 #include <cstdlib>
+#include <iterator>
 #include <string>
 #include <climits>
 #ifndef NTEST
@@ -16,6 +17,16 @@ namespace nstest_map {
 			n--;
 		}
 		return (i);
+	}
+
+	template <typename InputIt>
+	unsigned int distance(InputIt first, InputIt last)
+	{
+		unsigned int ret = 0;
+
+		for (;first != last; ++first)
+			++ret;
+		return(ret);
 	}
 
 	template<typename T>
@@ -166,7 +177,7 @@ namespace nstest_map {
 					break;
 				case (1):
 					if (!m1.empty() && !m2.empty())
-						m2.insert(it, add_iterator(it, (std::rand() % (m1.size() - ft::distance(m1.begin(), it)))));
+						m2.insert(it, add_iterator(it, (std::rand() % (m1.size() - nstest_map::distance(m1.begin(), it)))));
 					else if (!m2.empty())
 						m2.insert(it, m1.end());
 					else
@@ -199,7 +210,7 @@ namespace nstest_map {
 					break;
 				case (2):
 					if (!m2.empty() && it2 != m2.end()) {
-						m2.erase(it2, add_iterator(it2, (std::rand() % ft::distance(it2, m2.end()))));
+						m2.erase(it2, add_iterator(it2, (std::rand() % nstest_map::distance(it2, m2.end()))));
 					}
 			}
 
