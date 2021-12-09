@@ -38,8 +38,6 @@ namespace nstest_vector {
 		if (!v.empty()) {
 			std::cout << "front: " << v.front() << std::endl;
 			std::cout << "back: " << v.back() << std::endl;
-			std::cout << "*data:" << std::endl;
-			std::cout << *v.data() << std::endl;
 		}
 		std::cout << "content:" << std::endl;
 		for (typename C::const_iterator i = v.begin(); i != v.end(); i++)
