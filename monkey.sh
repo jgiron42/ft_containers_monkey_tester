@@ -1,16 +1,19 @@
 #!/bin/bash
 
-INCLUDE_DIRECTORIES=( ".." )
+if [ "$1" != "vector" -a "$1" != "stack" -a "$1" != "map" -a "$1" != "set" ]
+then
+  echo "Usage: $( basename $0 ) <container>" >&2
+  exit 1
+fi
 
-CFLAGS="-Wall -Werror -Wextra -std=c++98"
+[ ! -e .setup ] && ./setup.sh
 
-for i in "$INCLUDE_DIRECTORIES"
+. .setup
+
+for i in "${INCLUDE_DIRECTORIES[@]}"
 do
 	CFLAGS+=" -I"$i
 done
-
-trap "pkill fifodiff; pkill std_containers; pkill ft_containers" INT
-
 
 check_last_change()
 {
@@ -23,22 +26,28 @@ check_last_change()
   echo $ret
 }
 
-if [ ! -x ft_containers ] || [ "$(check_last_change)" -ge "$(stat -c %Y ft_containers)" -o "$(stat -c %Y main.cpp)" -ge "$(stat -c %Y ft_containers)" ]
+if [ ! -x bin/ft_containers_$1 ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/ft_containers_$1)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/ft_containers_$1)" ]
 then
-  echo "compiling ft... "
-  clang++ $CFLAGS -D NAMESPACE=ft main.cpp -o ft_containers || exit
-fi
-if [  ! -x std_containers  ] || [ "$(stat -c %Y main.cpp)" -ge "$(stat -c %Y std_containers)" ]
-then
-  echo "compiling std... "
-  clang++ $CFLAGS -D NAMESPACE=std main.cpp -o std_containers || exit
+  echo "🐒 compiling ft... "
+  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/ft_containers_$1 || exit
 fi
 
-./std_containers $@ > .stdtmp
-./ft_containers $@ > .fttmp
+if [  ! -x bin/std_containers_$1  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/std_containers_$1)" ]
+then
+  echo "🐒 compiling std... "
+  clang++ $CFLAGS -D NAMESPACE=std -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/std_containers_$1 || exit
+fi
 
-echo "diff:"
-diff .stdtmp .fttmp
+./bin/std_containers_$1 $@ > .stdtmp
+./bin/ft_containers_$1 $@ > .fttmp
+
+if diff .stdtmp .fttmp > diff.log
+then
+  echo "🐒 no diff detected."
+  rm 2>/dev/null diff.log
+else
+  echo "🐒 output differ:"
+  cat diff.log
+fi
+
 rm .stdtmp .fttmp 2>/dev/null
-
-

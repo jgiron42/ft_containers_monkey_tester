@@ -43,18 +43,19 @@ int main(int argc, char **argv)
 			perror("open");
 			return (1);
 		}
+		std::cout << "\033[32m";
 		while ( !(ret1 <= 0 && ret2 <= 0 && stop))
 		{
 			ret1 = read(fd1, buf1, BUFFER_SIZE);
 			if (ret1 == -1 && errno != EAGAIN)
 			{
-				perror("");
+				perror("fifodiff");
 				return 1;
 			}
 			ret2 = read(fd2, buf2, BUFFER_SIZE);
 			if (ret2 == -1 && errno != EAGAIN)
 			{
-				perror("");
+				perror("fifodiff");
 				return 1;
 			}
 //			std::cout << ret1 << " " << ret2 << std::endl;
@@ -65,7 +66,7 @@ int main(int argc, char **argv)
 			while (!d2.empty() && !d1.empty()) {
 				if (d1.front() == d2.front()) {
 					if (d1.front() == 3) {
-						std::cout << "no diff detected" << std::endl;
+						std::cout << std::endl << "\033[0m🐒 no diff detected" << std::endl;
 						return (0);
 					}
 #if BEFORE_SIZE > 0
@@ -82,7 +83,7 @@ int main(int argc, char **argv)
 				else
 				{
 					if ((d2.size() >= 100 && d1.size() >= 100)) {
-						std::cout << "files differ!!! (pos: " << pos << ")" << std::endl;
+						std::cout << std::endl << "\033[0m🐒 files differ!!! (pos: " << pos << ")" << std::endl;
 #if BEFORE_SIZE > 0
 							std::cout << "context:" << std::endl;
 							for (std::deque<char>::size_type i = 0; i < BEFORE_SIZE && i < before.size(); i++)
@@ -90,13 +91,15 @@ int main(int argc, char **argv)
 							std::cout << std::endl;
 							std::cout << "===================================================== ";
 #endif
-						std::cout << "file1:" << std::endl;
-						for (std::deque<char>::size_type i = 0; i < 100 && i < d1.size(); i++)
+						std::cout << "\033[0mfile1:" << std::endl;
+						std::cout << "\033[31m";
+						for (std::deque<char>::size_type i = 0; i < 200 && i < d1.size(); i++)
 							std::cout << d1[i];
 						std::cout << std::endl;
-						std::cout << "===================================================== ";
+						std::cout << "\033[0m";
 						std::cout << "file2:" << std::endl;
-						for (std::deque<char>::size_type i = 0; i < 100 && i < d1.size(); i++)
+						std::cout << "\033[31m";
+						for (std::deque<char>::size_type i = 0; i < 200 && i < d1.size(); i++)
 							std::cout << d2[i];
 						std::cout << std::endl;
 						return (1);

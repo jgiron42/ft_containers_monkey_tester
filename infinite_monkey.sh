@@ -1,18 +1,19 @@
 #!/bin/bash
 
-INCLUDE_DIRECTORIES=( ".." )
+if [ "$1" != "vector" -a "$1" != "stack" -a "$1" != "map" -a "$1" != "set" ]
+then
+  echo "Usage: $( basename $0 ) <container>" >&2
+  exit 1
+fi
 
+[ ! -e .setup ] && ./setup.sh
 
-trap "pkill fifodiff; pkill infinite_ft_containers; pkill infinite_std_containers; rm .stdpipe .ftpipe 2>/dev/null" INT
+. .setup
 
-CFLAGS="-Wall -Werror -Wextra -std=c++98"
-
-for i in "$INCLUDE_DIRECTORIES"
+for i in "${INCLUDE_DIRECTORIES[@]}"
 do
 	CFLAGS+=" -I"$i
 done
-
-
 
 check_last_change()
 {
@@ -26,50 +27,24 @@ check_last_change()
 }
 
 
-if [  ! -x fifodiff ] || [ "$(stat -c %Y fifodiff.cpp)" -ge "$(stat -c %Y fifodiff)" ]
+if [  ! -x bin/fifodiff ] || [ "$(stat -c %Y srcs/fifodiff.cpp)" -ge "$(stat -c %Y bin/fifodiff)" ]
 then
-  echo "compiling fifodiff..."
-  clang++ $CFLAGS -D BEFORE_SIZE=-1 fifodiff.cpp -o fifodiff || exit
+  echo "🐒 compiling fifodiff..."
+  clang++ $CFLAGS -D BEFORE_SIZE=-1 srcs/fifodiff.cpp -o bin/fifodiff || exit
 fi
-if [ ! -x infinite_ft_containers ] || [ "$(check_last_change)" -ge "$(stat -c %Y infinite_ft_containers)" -o "$(stat -c %Y main.cpp)" -ge "$(stat -c %Y infinite_ft_containers)" ]
+if [ ! -x bin/infinite_ft_containers_$1 ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/infinite_ft_containers_$1)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/infinite_ft_containers_$1)" ]
 then
-  echo "compiling ft... "
-  clang++ $CFLAGS -D NTEST=-1 -D NAMESPACE=ft main.cpp -o infinite_ft_containers || exit
+  echo "🐒 compiling ft... "
+  clang++ $CFLAGS -D NTEST=-1 -D NAMESPACE=ft -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/infinite_ft_containers_$1 || exit
 fi
-if [  ! -x infinite_std_containers  ] || [ "$(stat -c %Y main.cpp)" -ge "$(stat -c %Y infinite_std_containers)" ]
+if [  ! -x bin/infinite_std_containers_$1  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/infinite_std_containers_$1)" ]
 then
-  echo "compiling std... "
-  clang++ $CFLAGS -D NTEST=-1 -D NAMESPACE=std main.cpp -o infinite_std_containers || exit
+  echo "🐒 compiling std... "
+  clang++ $CFLAGS -D NTEST=-1 -D NAMESPACE=std -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/infinite_std_containers_$1 || exit
 fi
 
 rm .stdpipe .ftpipe 2>/dev/null
 mkfifo .stdpipe .ftpipe
-
-./fifodiff .stdpipe .ftpipe &
-./infinite_std_containers $@ >> .stdpipe | ./infinite_ft_containers $@ >> .ftpipe &
-cat << EOF""
-...............................:*FV$V*:...........
-..............................*V$$$$****:.........
-.............................:***I$$III***:.......
-..............................***I$$V***V$$V*:....
-.............................***:**F$$$$$$$$$V*...
-...........................:::*:::*F$$$$$$$$$$$V:.
-...........................:**::::*$$$$$$$$$$$$$$:
-.................:***********II****$$$$$$$$$$$$$$I
-...............*FI**V$$$$$$$$$$$$V$$$$$$$$$$$$$$$V
-.............:III***:::**V$$$$$$$$$$$$$$$$$$$$$$$*
-.............:***II*:...*V$$V$$$$$$$$$$$$$$$$$$$$:
-............:**..::*....**:*$$$$$$$$$$$$$$$$$$$$$:
-:I$$:......:*:..........:****$$$$$$$$$$$$$$$$$$$V.
-.FNNM:...................:***I$$$$$$$$$$$$$$$$$$*.
-..*MNM*....................:.:$$$$$$$$$$$$$$$$$V..
-...*MN$::****:........::******$$$$$$$$$$$$$$$$$:..
-....*$**FVVV$*::::.:***********IV$$$$IF$$$$$$$*:..
-...:::::*****::::::..::::************:::*****:....
-MONKEY IS TESTING YOUR PROJECT...
-EOF
-wait
-rm .stdpipe .ftpipe 2>/dev/null
-pkill fifodiff
-
-
+trap "pkill -9 fifodiff; rm .stdpipe .ftpipe 2>/dev/null" INT
+echo "🐒 running... "
+./bin/infinite_std_containers_$1 $@ >> .stdpipe | ./bin/infinite_ft_containers_$1 $@ >> .ftpipe | ./bin/fifodiff .stdpipe .ftpipe

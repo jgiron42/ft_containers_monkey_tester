@@ -1,4 +1,4 @@
-#include "stack.hpp"
+#include "../includes.hpp"
 #include <vector>
 #include <set>
 #include <cstdlib>
