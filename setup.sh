@@ -1,5 +1,6 @@
 #!/bin/sh
 
+mkdir -p bin
 echo "please enter the list of your sources directories separated by spaces:"
 read dirs
 cat >.setup <<EOF
