@@ -91,13 +91,13 @@ int main(int argc, char **argv)
 							std::cout << std::endl;
 							std::cout << "===================================================== ";
 #endif
-						std::cout << "\033[0mfile1:" << std::endl;
+						std::cout << "\033[0m" << argv[1] << ":" << std::endl;
 						std::cout << "\033[31m";
 						for (std::deque<char>::size_type i = 0; i < 200 && i < d1.size(); i++)
 							std::cout << d1[i];
 						std::cout << std::endl;
 						std::cout << "\033[0m";
-						std::cout << "file2:" << std::endl;
+						std::cout << argv[2] << ":" << std::endl;
 						std::cout << "\033[31m";
 						for (std::deque<char>::size_type i = 0; i < 200 && i < d1.size(); i++)
 							std::cout << d2[i];

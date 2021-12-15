@@ -43,8 +43,9 @@ then
   clang++ $CFLAGS -D NTEST=-1 -D NAMESPACE=std -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/infinite_std_containers_$1 || exit
 fi
 
-rm .stdpipe .ftpipe 2>/dev/null
-mkfifo .stdpipe .ftpipe
-trap "pkill -9 fifodiff; rm .stdpipe .ftpipe 2>/dev/null" INT
+rm .std .ft 2>/dev/null
+mkfifo .std .ft
+trap "pkill -9 fifodiff; rm .std .ft 2>/dev/null" INT
 echo "🐒 running... "
-./bin/infinite_std_containers_$1 $@ >> .stdpipe | ./bin/infinite_ft_containers_$1 $@ >> .ftpipe | ./bin/fifodiff .stdpipe .ftpipe
+./bin/infinite_std_containers_$1 $@ >> .std | ./bin/infinite_ft_containers_$1 $@ >> .ft | ./bin/fifodiff .std .ft
+rm .std .ft 2>/dev/null
