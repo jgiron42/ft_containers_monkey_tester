@@ -5,6 +5,7 @@ then
   echo "Usage: $( basename $0 ) <container>" >&2
   exit 1
 fi
+shift
 
 [ ! -e .setup ] && ./setup.sh
 
