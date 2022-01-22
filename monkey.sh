@@ -5,6 +5,8 @@ then
   echo "Usage: $( basename $0 ) <container>" >&2
   exit 1
 fi
+
+C=$1
 shift
 
 [ ! -e .setup ] && ./setup.sh
@@ -27,20 +29,20 @@ check_last_change()
   echo $ret
 }
 
-if [ ! -x bin/ft_containers_$1 ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/ft_containers_$1)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/ft_containers_$1)" ]
+if [ ! -x bin/ft_containers_$C ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/ft_containers_$C)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/ft_containers_$C)" ]
 then
   echo "🐒 compiling ft... "
-  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/ft_containers_$1 || exit
+  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $C | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/ft_containers_$C || exit
 fi
 
-if [  ! -x bin/std_containers_$1  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/std_containers_$1)" ]
+if [  ! -x bin/std_containers_$C  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/std_containers_$C)" ]
 then
   echo "🐒 compiling std... "
-  clang++ $CFLAGS -D NAMESPACE=std -D MONKEY_$(echo $1 | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/std_containers_$1 || exit
+  clang++ $CFLAGS -D NAMESPACE=std -D MONKEY_$(echo $C | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/std_containers_$C || exit
 fi
 
-./bin/std_containers_$1 $@ > .stdtmp
-./bin/ft_containers_$1 $@ > .fttmp
+./bin/std_containers_$C $@ > .stdtmp
+./bin/ft_containers_$C $@ > .fttmp
 
 if diff .stdtmp .fttmp > diff.log
 then
