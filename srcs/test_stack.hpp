@@ -1,5 +1,6 @@
 #include "../includes.hpp"
 #include <vector>
+#include <iostream>
 #include <set>
 #include <cstdlib>
 #include <string>

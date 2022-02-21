@@ -1,5 +1,6 @@
 
 #include "../includes.hpp"
+#include <iostream>
 #include <set>
 #include <cstdlib>
 #include <iterator>
