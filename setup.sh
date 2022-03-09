@@ -30,7 +30,7 @@ else
 fi
 cat >.setup <<EOF
 INCLUDE_DIRECTORIES=( $dirs )
-CFLAGS="-Wall -Werror -Wextra -std=c++98 $EXTRA_DEFINE"
+CFLAGS="-g3 -Wall -Werror -Wextra -std=c++98 $EXTRA_DEFINE"
 EOF
 
 

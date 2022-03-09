@@ -1,4 +1,3 @@
-
 #include "../includes.hpp"
 #include "common.hpp"
 #include <iostream>
@@ -10,6 +9,7 @@
 #include <climits>
 #include "logger.hpp"
 #include <sstream>
+#include "input_iterator.hpp"
 #ifndef NTEST
 # define NTEST 1000
 #endif
@@ -18,12 +18,31 @@ extern class logger logger;
 
 namespace nstest_map {
 
+	/**
+	 * this class is given in template argument to the tested map in order to check if
+	 * key_compare is used for comparisons
+	 */
 	class my_compare {
 	public:
 		my_compare(){}
+		std::string reverse(std::string s) const
+		{
+			long  int i = 0;
+			long  int j = s.length() - 1;
+			char swap;
+			while (i < j)
+			{
+				swap = s[i];
+				s[i] = s[j];
+				s[j] = swap;
+				++i;
+				--j;
+			}
+			return (s);
+		}
 		bool	operator()(const std::string &l, const std::string &r) const
 		{
-			return (l >	 r);
+			return (reverse(l) > reverse(r));
 		}
 	};
 
@@ -62,8 +81,8 @@ namespace nstest_map {
 		const std::set<typename C::value_type> s(m1.begin(), m1.end());
 		logger.log<logger::CPP>("set = std::set<C::value_type>(" + n1 + ".begin(), " + n1 + ".end());");
 
-		m1 = C(s.begin(), s.end());
-		logger.log<logger::CPP>( n1 + " = C(set.begin(), set.end());");
+		m1 = C( input_iterator<typename std::set<typename C::value_type>::iterator>(s.begin()),  input_iterator<typename std::set<typename C::value_type>::iterator>(s.end()));
+		logger.log<logger::CPP>( n1 + " = C( input_iterator<typename std::set<typename C::value_type>::iterator>(set.begin()),  input_iterator<typename std::set<typename C::value_type>::iterator>(set.end()));");
 //		print_full_map<C, P>(m1);
 	}
 
@@ -120,8 +139,8 @@ namespace nstest_map {
 					it2 = nstest_map::get_itn(m1, rand, it1);
 					logger.log<logger::CPP>("it1 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ");");
 					logger.log<logger::CPP>("it2 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ", it1);");
-					logger.log<logger::CPP>(n2 + ".insert(it1, it2);");
-					m2.insert(it1, it2);
+					logger.log<logger::CPP>(n2 + ".insert(input_iterator<C::iterator>(it1), input_iterator<C::iterator>(it2));");
+					m2.insert(input_iterator<typename 	C::iterator>(it1), input_iterator<typename C::iterator>(it2));
 					break;
 				case (2):
 					logger.log<logger::TITLE>("insert hint:" );
@@ -323,7 +342,9 @@ void	test_map(int seed) {
 		C m2; logger.log<logger::CPP>("C m2;");
 		logger.log<logger::CPP>("int ret;");
 		logger.log<logger::CPP>("C::iterator it1;");
+		logger.log<logger::CPP>("input_iterator<C::iterator> inputit1;");
 		logger.log<logger::CPP>("C::iterator it2;");
+		logger.log<logger::CPP>("input_iterator<C::iterator> inputit2;");
 		logger.log<logger::CPP>("std::set<C::value_type> set;");
 		logger.log<logger::CPP>("_P<C::iterator, bool> pair_it_bool;");
 		logger.log<logger::CPP>("_P<C::iterator, C::iterator> range;");
