@@ -17,12 +17,20 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <sys/time.h>
+#include "logger.hpp"
 #ifndef NAMESPACE
 # define NAMESPACE ft
 #endif
 #ifndef NTEST
 # define NTEST 1000
 #endif
+#ifndef CPP_LOG_PATH
+# define CPP_LOG_PATH "./log/"
+#endif
+#define STR_EXPAND(tok) #tok
+#define STR(tok) STR_EXPAND(tok)
+
+class logger logger;
 
 int main(int argc, char **argv)
 {
@@ -31,7 +39,21 @@ int main(int argc, char **argv)
 
 	if (argc == 2)
 		seed = atoi(argv[1]);
+#ifdef CPP_LOGGING
+	if (NTEST != -1) {
+		logger.open(std::string(CPP_LOG_PATH) + "/log.cpp" );
+		logger.raw = true;
+	}
+#endif
+	logger.init_cpp();
+	logger.define("NAMESPACE", "ft");
+	logger.define("_P", "NAMESPACE::pair");
+	logger.include("includes.hpp");
+	logger.include("common.hpp");
+	logger.log<logger::CPP>("class logger logger;");
+	logger.create_function("int main()");
 #ifdef MONKEY_MAP
+	logger.set_typedef("NAMESPACE::map<std::string, std::string>", "C");
 	test_map<NAMESPACE::map<std::string, std::string>, NAMESPACE::pair>(seed);
 #endif
 #ifdef MONKEY_VECTOR
@@ -40,36 +62,8 @@ int main(int argc, char **argv)
 #ifdef MONKEY_STACK
 	test_stack<NAMESPACE::stack<std::string> >(seed);
 #endif
-
-
-//	if (argc >= 2)
-//	{
-//		if (argc == 3)
-//			seed = atoi(argv[2]);
-//		if (std::string(argv[1]) == std::string("vector"))
-//			test_vector<NAMESPACE::vector<std::string> >(seed);
-//		else if (std::string(argv[1]) == std::string("map"))
-//			test_map<NAMESPACE::map<std::string, std::string>, NAMESPACE::pair>(seed);
-//		else if (std::string(argv[1]) == std::string("stack"))
-//			test_stack<NAMESPACE::stack<std::string> >(seed);
-//		else
-//		{
-//			std::cerr << "Invalid arguments" << std::endl;
-//			ret = 1;
-//		}
-//	}
-//	else
-//	{
-//#if NTEST == -1
-//		std::cerr << "Invalid arguments" << std::endl;
-//			ret = 1;
-//#else
-//		test_stack<NAMESPACE::stack<std::string> >(seed);
-//		test_map<NAMESPACE::map<std::string, std::string>, NAMESPACE::pair>(seed);
-//		test_vector<NAMESPACE::vector<std::string> >(seed);
-//#endif
-//	}
+	logger.pop_block();
 	if (!isatty(1))
-		std::cout << (char)'\3' << std::endl;
+		logger.log<logger::NONE>("\3");
 	return ret;
 }
