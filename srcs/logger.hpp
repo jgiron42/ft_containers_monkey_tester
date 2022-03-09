@@ -252,8 +252,6 @@ public:
 		this->log<CPP>("#ifndef SSTR");
 		this->log<CPP>("# define SSTR( x ) (static_cast< std::ostringstream & >( ( std::ostringstream() << std::dec << (x) ) ).str())");
 		this->log<CPP>("#endif");
-
-		this->define("SSTR( x )", "(static_cast< std::ostringstream & >( ( std::ostringstream() << std::dec << (x) ) ).str())", false);
 	}
 };
 
