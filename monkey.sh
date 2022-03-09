@@ -32,7 +32,7 @@ check_last_change()
 if [ ! -x bin/ft_containers_$C ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/ft_containers_$C)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/ft_containers_$C)" ]
 then
   echo "🐒 compiling ft... "
-  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $C | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/ft_containers_$C || exit
+  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $C | tr 'a-z' 'A-Z')  srcs/main.cpp -o bin/ft_containers_$C || exit
 fi
 
 if [  ! -x bin/std_containers_$C  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/std_containers_$C)" ]
@@ -44,13 +44,13 @@ fi
 ./bin/std_containers_$C $@ > .stdtmp
 ./bin/ft_containers_$C $@ > .fttmp
 
-if diff .stdtmp .fttmp > diff.log
+if diff -y  .stdtmp .fttmp > diff.log
 then
   echo "🐒 no diff detected."
   rm 2>/dev/null diff.log
 else
   echo "🐒 output differ:"
-  cat diff.log
+  cat diff.log | grep -B50 -A10 '  <\|  >'
 fi
 
 rm .stdtmp .fttmp 2>/dev/null

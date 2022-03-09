@@ -18,7 +18,14 @@ extern class logger logger;
 
 namespace nstest_map {
 
-
+	class my_compare {
+	public:
+		my_compare(){}
+		bool	operator()(const std::string &l, const std::string &r) const
+		{
+			return (l >	 r);
+		}
+	};
 
 	template<class C, template<class, class> class P>
 	void test_clear(const std::string &n1, C &m1, const std::string &,  C &) {
@@ -185,8 +192,8 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_count(const std::string &n1, C &m1, const std::string &,  C &) {
-		logger.log<logger::TITLE>("test_count:" );
 		std::string key = get_value<typename C::mapped_type>();
+		logger.log<logger::TITLE>("test_count: [" + SSTR(key) + "]" );
 		logger.log<logger::CPP>("ret = " + n1 + ".count(\"" + key + "\");");
 		int ret = m1.count(key);
 		logger.log<logger::CPP_LOG>("\"ret = \" + SSTR(ret)");
@@ -195,8 +202,8 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_find(const std::string &n1, C &m1, const std::string &,  C &) {
-		logger.log<logger::TITLE>("test_find:" );
 		std::string key = get_value<typename C::mapped_type>();
+		logger.log<logger::TITLE>("test_find: [" + SSTR(key)  + "]");
 
 		logger.log<logger::CPP>("it1 = " + n1 + ".find(\"" + key + "\");");
 		typename C::iterator ret =  m1.find(key);
@@ -211,8 +218,8 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_equal_range(const std::string &n1, C &m1, const std::string &,  C &) {
-		logger.log<logger::TITLE>("test_equal_range:" );
 		std::string key = get_value<typename C::mapped_type>();
+		logger.log<logger::TITLE>("test_equal_range: [" + SSTR(key) + "]" );
 		P<typename C::iterator, typename C::iterator> ret =  m1.equal_range(key);
 		logger.template log<logger::CPP>("range = " + n1 + ".equal_range(\"" + key + "\");");
 		logger.template log<logger::CPP>("if (range.first != " + n1 + ".end())");
@@ -231,8 +238,8 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_upper_bound(const std::string &n1, C &m1, const std::string &,  C &) {
-		logger.log<logger::TITLE>("test_upper_bound:" );
 		std::string key = get_value<typename C::mapped_type>();
+		logger.log<logger::TITLE>("test_upper_bound: [" + SSTR(key) + "]" );
 
 		typename C::iterator ret =  m1.upper_bound(key);
 		logger.log<logger::CPP>("it1 = " + n1 + ".upper_bound(\"" + key + "\");");
@@ -246,8 +253,8 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_lower_bound(const std::string &n1, C &m1, const std::string &,  C &) {
-		logger.log<logger::TITLE>("test_lower_bound:" );
 		std::string key = get_value<typename C::mapped_type>();
+		logger.log<logger::TITLE>("test_lower_bound: [" + SSTR(key) + "]");
 
 		typename C::iterator ret =  m1.lower_bound(key);
 		logger.log<logger::CPP>("it1 = " + n1 + ".lower_bound(\"" + key + "\");");

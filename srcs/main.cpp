@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	logger.create_function("int main()");
 #ifdef MONKEY_MAP
 	logger.set_typedef("NAMESPACE::map<std::string, std::string>", "C");
-	test_map<NAMESPACE::map<std::string, std::string>, NAMESPACE::pair>(seed);
+	test_map<NAMESPACE::map<std::string, std::string, nstest_map::my_compare>, NAMESPACE::pair>(seed);
 #endif
 #ifdef MONKEY_VECTOR
 	test_vector<NAMESPACE::vector<std::string> >(seed);
