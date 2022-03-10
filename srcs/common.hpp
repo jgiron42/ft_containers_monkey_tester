@@ -18,7 +18,7 @@
 
 extern class logger logger;
 
-namespace nstest_map
+namespace monkey
 {
 	template<class it>
 	it add_iterator(it i, int n) {
@@ -39,14 +39,9 @@ namespace nstest_map
 		return(ret);
 	}
 
-	/**
-	 * @def get an iterator at a random position of the container c after min based on the random number r
-	 * @param c the container to get the iterator from
-	 * @param r a random number
-	 * @param min the returned iterator is guaranteed to be min or after min
-	 */
+
 	template <typename T>
-	typename T::iterator get_itn(T &c, int r, typename T::iterator min)
+	typename T::iterator get_itn(T &c, int r, typename T::iterator min, std::forward_iterator_tag)
 	{
 		typename T::iterator ret = min;
 		int pos = 0;
@@ -57,6 +52,26 @@ namespace nstest_map
 		for (int i = 0; i < pos; i++)
 			ret++;
 		return (ret);
+	}
+
+	template <typename T>
+	typename T::iterator get_itn(T &c, int r, typename T::iterator min, std::random_access_iterator_tag)
+	{
+		if (min == c.end())
+			return (c.end());
+		return (min + (c.end() - min) % r);
+	}
+
+	/**
+	 * @def get an iterator at a random position of the container c after min based on the random number r
+	 * @param c the container to get the iterator from
+	 * @param r a random number
+	 * @param min the returned iterator is guaranteed to be min or after min
+	 */
+	template <typename T>
+	typename T::iterator get_itn(T &c, int r, typename T::iterator min)
+	{
+		return (get_itn(c, r, min, std::__iterator_category(min)));
 	}
 
 	/**
@@ -89,7 +104,7 @@ namespace nstest_map
 
 	template<class C, template<class, class> class P>
 	void print_full_map(const C &m,const std::string &name) {
-		logger.log<logger::CPP>("nstest_map::print_full_map<C, _P>(" + name + ", \"" + name + "\");");
+		logger.log<logger::CPP>("monkey::print_full_map<C, _P>(" + name + ", \"" + name + "\");");
 
 		logger.log<logger::NONE>("empty: " + SSTR(m.empty()));
 		logger.log<logger::NONE>("size: " + SSTR(m.size()));

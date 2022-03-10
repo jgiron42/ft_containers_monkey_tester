@@ -16,7 +16,7 @@
 
 extern class logger logger;
 
-namespace nstest_map {
+namespace monkey_map {
 
 	/**
 	 * this class is given in template argument to the tested map in order to check if
@@ -54,7 +54,7 @@ namespace nstest_map {
 		C m3(m1);
 		logger.log<logger::CPP>(n1 + ".clear();");
 		m1.clear();
-		print_full_map<C, P>(m3, "m3");
+		monkey::print_full_map<C, P>(m3, "m3");
 		logger.log<logger::CPP>("m3.clear();");
 		m3.clear();
 		logger.pop_block();
@@ -83,7 +83,7 @@ namespace nstest_map {
 
 		m1 = C( input_iterator<typename std::set<typename C::value_type>::iterator>(s.begin()),  input_iterator<typename std::set<typename C::value_type>::iterator>(s.end()));
 		logger.log<logger::CPP>( n1 + " = C( input_iterator<std::set<C::value_type>::iterator>(set.begin()),  input_iterator<std::set<C::value_type>::iterator>(set.end()));");
-//		print_full_map<C, P>(m1);
+//		monkey::print_full_map<C, P>(m1);
 	}
 
 	template<class C, template<class, class> class P>
@@ -93,17 +93,17 @@ namespace nstest_map {
 		std::string val;
 
 		for (int i = 0; i < 5; i++) {
-			key = get_value<typename C::mapped_type>();
-			val = get_value<typename C::mapped_type>();
+			key = monkey::get_value<typename C::mapped_type>();
+			val = monkey::get_value<typename C::mapped_type>();
 			m1[key] = val;
 			logger.log<logger::CPP>(n1 + "[\"" + key +"\"] = \"" + val + "\";");
 
-			key = get_value<typename C::mapped_type>();
+			key = monkey::get_value<typename C::mapped_type>();
 			logger.log<logger::CPP>("std::cout << " + n1 + "[\"" + key +"\"] << std::endl;");
 			std::cout << m1[key] << std::endl;
 		}
-//		print_full_map<C, P>(m1);
-//		print_full_map<C, P>(m2);
+//		monkey::print_full_map<C, P>(m1);
+//		monkey::print_full_map<C, P>(m2);
 	}
 
 	template<class C, template<class, class> class P>
@@ -122,8 +122,8 @@ namespace nstest_map {
 			switch (std::rand() % 3) {
 				case (0):
 					logger.log<logger::TITLE>("insert value_type:");
-					key = get_value<typename C::key_type>();
-					value = get_value<typename C::mapped_type>();
+					key = monkey::get_value<typename C::key_type>();
+					value = monkey::get_value<typename C::mapped_type>();
 					val = NAMESPACE::make_pair(key, value);
 					logger.log<logger::CPP>("val = _P<C::key_type, C::mapped_type>(\"" + key + "\", \"" + value + "\");");
 					logger.log<logger::CPP>("pair_it_bool = " + n1 + ".insert(val);");
@@ -134,21 +134,21 @@ namespace nstest_map {
 				case (1):
 					logger.log<logger::TITLE>("insert range:" );
 					rand = std::rand();
-					it1 = nstest_map::get_itn(m1, rand);
+					it1 = monkey::get_itn(m1, rand);
 					rand = std::rand();
-					it2 = nstest_map::get_itn(m1, rand, it1);
-					logger.log<logger::CPP>("it1 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ");");
-					logger.log<logger::CPP>("it2 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ", it1);");
+					it2 = monkey::get_itn(m1, rand, it1);
+					logger.log<logger::CPP>("it1 = monkey::get_itn(" + n1 + ", " + SSTR(rand) + ");");
+					logger.log<logger::CPP>("it2 = monkey::get_itn(" + n1 + ", " + SSTR(rand) + ", it1);");
 					logger.log<logger::CPP>(n2 + ".insert(input_iterator<C::iterator>(it1), input_iterator<C::iterator>(it2));");
 					m2.insert(input_iterator<typename 	C::iterator>(it1), input_iterator<typename C::iterator>(it2));
 					break;
 				case (2):
 					logger.log<logger::TITLE>("insert hint:" );
 					rand = std::rand();
-					it1 = nstest_map::get_itn(m1, rand);
-					logger.log<logger::CPP>("it1 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ");");
-					key = get_value<typename C::key_type>();
-					value = get_value<typename C::mapped_type>();
+					it1 = monkey::get_itn(m1, rand);
+					logger.log<logger::CPP>("it1 = monkey::get_itn(" + n1 + ", " + SSTR(rand) + ");");
+					key = monkey::get_value<typename C::key_type>();
+					value = monkey::get_value<typename C::mapped_type>();
 					val = NAMESPACE::make_pair(key, value);
 					logger.log<logger::CPP>("val = _P<C::key_type, C::mapped_type>(\"" + key + "\", \"" + value + "\");");
 					logger.log<logger::CPP>("it1 = " + n1 + ".insert(it1, val);");
@@ -158,7 +158,7 @@ namespace nstest_map {
 					break;
 			}
 		}
-		print_full_map<C, P>(m1, n1);
+		monkey::print_full_map<C, P>(m1, n1);
 	}
 
 	template<class C, template<class, class> class P>
@@ -176,8 +176,8 @@ namespace nstest_map {
 					if (!m1.empty()) {
 						logger.log<logger::TITLE>("erase it:" );
 						rand = std::rand();
-						it1 = nstest_map::get_itn(m1, rand);
-						logger.template log<logger::CPP>("it1 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ");");
+						it1 = monkey::get_itn(m1, rand);
+						logger.template log<logger::CPP>("it1 = monkey::get_itn(" + n1 + ", " + SSTR(rand) + ");");
 						m1.erase(it1);
 						logger.template log<logger::CPP>("if (!" +n1 + ".empty())");
 						logger.create_block();
@@ -188,7 +188,7 @@ namespace nstest_map {
 				case (1):
 					if (!m1.empty()) {
 						logger.log<logger::TITLE>("erase key_type:" );
-						val = get_value<typename C::key_type>();
+						val = monkey::get_value<typename C::key_type>();
 						ret = m1.erase(val);
 						logger.log<logger::CPP>("ret = " + n1 + ".erase(\"" + val + "\");");
 						logger.log<logger::CPP_LOG>("\"ret = \" + SSTR(ret)");
@@ -198,11 +198,11 @@ namespace nstest_map {
 				case (2):
 					logger.log<logger::TITLE>("erase range:" );
 					rand = std::rand();
-					it1 = nstest_map::get_itn(m1, rand);
-					logger.log<logger::CPP>("it1 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ");");
+					it1 = monkey::get_itn(m1, rand);
+					logger.log<logger::CPP>("it1 = monkey::get_itn(" + n1 + ", " + SSTR(rand) + ");");
 					rand = std::rand();
-					it2 = nstest_map::get_itn(m1, rand, it1);
-					logger.log<logger::CPP>("it2 = nstest_map::get_itn(" + n1 + ", " + SSTR(rand) + ", it1);");
+					it2 = monkey::get_itn(m1, rand, it1);
+					logger.log<logger::CPP>("it2 = monkey::get_itn(" + n1 + ", " + SSTR(rand) + ", it1);");
 					m1.erase(it1, it2);
 					logger.log<logger::CPP>(n1 + ".erase(it1, it2);");
 			}
@@ -211,7 +211,7 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_count(const std::string &n1, C &m1, const std::string &,  C &) {
-		std::string key = get_value<typename C::mapped_type>();
+		std::string key = monkey::get_value<typename C::mapped_type>();
 		logger.log<logger::TITLE>("test_count: [" + SSTR(key) + "]" );
 		logger.log<logger::CPP>("ret = " + n1 + ".count(\"" + key + "\");");
 		int ret = m1.count(key);
@@ -221,7 +221,7 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_find(const std::string &n1, C &m1, const std::string &,  C &) {
-		std::string key = get_value<typename C::mapped_type>();
+		std::string key = monkey::get_value<typename C::mapped_type>();
 		logger.log<logger::TITLE>("test_find: [" + SSTR(key)  + "]");
 
 		logger.log<logger::CPP>("it1 = " + n1 + ".find(\"" + key + "\");");
@@ -237,7 +237,7 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_equal_range(const std::string &n1, C &m1, const std::string &,  C &) {
-		std::string key = get_value<typename C::mapped_type>();
+		std::string key = monkey::get_value<typename C::mapped_type>();
 		logger.log<logger::TITLE>("test_equal_range: [" + SSTR(key) + "]" );
 		P<typename C::iterator, typename C::iterator> ret =  m1.equal_range(key);
 		logger.template log<logger::CPP>("range = " + n1 + ".equal_range(\"" + key + "\");");
@@ -257,7 +257,7 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_upper_bound(const std::string &n1, C &m1, const std::string &,  C &) {
-		std::string key = get_value<typename C::mapped_type>();
+		std::string key = monkey::get_value<typename C::mapped_type>();
 		logger.log<logger::TITLE>("test_upper_bound: [" + SSTR(key) + "]" );
 
 		typename C::iterator ret =  m1.upper_bound(key);
@@ -272,7 +272,7 @@ namespace nstest_map {
 
 	template<class C, template<class, class> class P>
 	void test_lower_bound(const std::string &n1, C &m1, const std::string &,  C &) {
-		std::string key = get_value<typename C::mapped_type>();
+		std::string key = monkey::get_value<typename C::mapped_type>();
 		logger.log<logger::TITLE>("test_lower_bound: [" + SSTR(key) + "]");
 
 		typename C::iterator ret =  m1.lower_bound(key);
@@ -322,20 +322,20 @@ template<class C, template<class, class> class P>
 void	test_map(int seed) {
 		std::srand(seed);
 		void  (*array[])(const std::string &, C &,const std::string &,C &) = {
-				&nstest_map::test_construct<C, P>,
-				&nstest_map::test_copy_construct_equal<C, P>,
-				&nstest_map::test_operator_index<C, P>,
-				&nstest_map::test_clear<C, P>,
-				&nstest_map::test_insert<C, P>,
-				&nstest_map::test_count<C, P>,
-				&nstest_map::test_find<C, P>,
-				&nstest_map::test_equal_range<C, P>,
-				&nstest_map::test_upper_bound<C, P>,
-				&nstest_map::test_lower_bound<C, P>,
-				&nstest_map::test_erase<C, P>,
-				&nstest_map::test_swap<C, P>,
-				&nstest_map::test_stdswap<C, P>,
-				&nstest_map::test_comparison<C, P>
+				&monkey_map::test_construct<C, P>,
+				&monkey_map::test_copy_construct_equal<C, P>,
+				&monkey_map::test_operator_index<C, P>,
+				&monkey_map::test_clear<C, P>,
+				&monkey_map::test_insert<C, P>,
+				&monkey_map::test_count<C, P>,
+				&monkey_map::test_find<C, P>,
+				&monkey_map::test_equal_range<C, P>,
+				&monkey_map::test_upper_bound<C, P>,
+				&monkey_map::test_lower_bound<C, P>,
+				&monkey_map::test_erase<C, P>,
+				&monkey_map::test_swap<C, P>,
+				&monkey_map::test_stdswap<C, P>,
+				&monkey_map::test_comparison<C, P>
 		};
 
 		C m1; logger.log<logger::CPP>("C m1;");
@@ -358,9 +358,9 @@ void	test_map(int seed) {
 			else
 				array[rand]("m2", m2,"m1", m1);
 			logger.log<logger::TITLE>("printing m1:");
-			nstest_map::print_full_map<C, P>(m1, "m1");
+			monkey::print_full_map<C, P>(m1, "m1");
 			logger.log<logger::TITLE>("printing m2:");
-			nstest_map::print_full_map<C, P>(m2, "m2");
+			monkey::print_full_map<C, P>(m2, "m2");
 			logger.log<logger::NONE>("========================================");
 
 		}

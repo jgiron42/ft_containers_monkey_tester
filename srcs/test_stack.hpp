@@ -9,7 +9,7 @@
 # define NTEST 1000
 #endif
 
-namespace nstest_stack {
+namespace monkey_stack {
 	template<typename T>
 	T get_value() {
 		return (T());
@@ -99,11 +99,11 @@ template<class C>
 void	test_stack(int seed) {
 		std::srand(seed);
 		void  (*array[])(C &,C &) = {
-				&nstest_stack::test_construct<C>,
-				&nstest_stack::test_copy_construct_equal<C>,
-				&nstest_stack::test_push<C>,
-				&nstest_stack::test_pop<C>,
-				&nstest_stack::test_comparison<C>
+				&monkey_stack::test_construct<C>,
+				&monkey_stack::test_copy_construct_equal<C>,
+				&monkey_stack::test_push<C>,
+				&monkey_stack::test_pop<C>,
+				&monkey_stack::test_comparison<C>
 		};
 		C s1;
 		C s2;
@@ -113,8 +113,8 @@ void	test_stack(int seed) {
 				array[rand](s1, s2);
 			else
 				array[rand](s2, s1);
-			nstest_stack::print_full_stack<C>(s1);
-			nstest_stack::print_full_stack<C>(s2);
+			monkey_stack::print_full_stack<C>(s1);
+			monkey_stack::print_full_stack<C>(s2);
 			std::cout << "========================================" << std::endl;
 		}
 	}

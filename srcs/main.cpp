@@ -55,12 +55,14 @@ int main(int argc, char **argv)
 	logger.create_function("int main()");
 #ifdef MONKEY_MAP
 	logger.set_typedef("NAMESPACE::map<std::string, std::string>", "C");
-	test_map<NAMESPACE::map<std::string, std::string, nstest_map::my_compare>, NAMESPACE::pair>(seed);
+	test_map<NAMESPACE::map<std::string, std::string, monkey_map::my_compare>, NAMESPACE::pair>(seed);
 #endif
 #ifdef MONKEY_VECTOR
+	logger.set_typedef("NAMESPACE::vector<std::string>", "C");
 	test_vector<NAMESPACE::vector<std::string> >(seed);
 #endif
 #ifdef MONKEY_STACK
+	logger.set_typedef("NAMESPACE::stack<std::string>", "C");
 	test_stack<NAMESPACE::stack<std::string> >(seed);
 #endif
 	logger.pop_block();
