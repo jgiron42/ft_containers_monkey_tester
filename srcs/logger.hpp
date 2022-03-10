@@ -163,9 +163,8 @@ public:
 	{
 		if (!log_cpp)
 			return ;
-		int	ret;
 		this->log<CPP>("{");
-		ret = this->log<CPP>("}");
+		this->log<CPP>("}");
 		this->block_depth++;
 	}
 
