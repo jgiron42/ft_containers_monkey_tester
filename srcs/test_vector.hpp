@@ -380,7 +380,8 @@ void	test_vector(int seed)
 	logger.log<logger::CPP>("C::iterator it3;");
 	for (int i = 0; NTEST == -1 || i < NTEST; i++)
 	{
-		logger.log<logger::CPP>("std::cout << \"[GDB]============================> br \" << __FILE__ << \":\" << SSTR(__LINE__) << std::endl;");
+		if (!logger.log<logger::BREAKPOINT>(""))
+			logger.log<logger::NONE>("========================================");
 		int rand = std::rand() % sizeof(array) / sizeof (void (*)(C &, C &));
 		if (std::rand() % 2)
 			array[rand]("v1", v1, "v2", v2);
@@ -390,6 +391,5 @@ void	test_vector(int seed)
 		monkey_vector::print_full_vect(v1, "v1");
 		logger.log<logger::TITLE>("printing v2:");
 		monkey_vector::print_full_vect(v2, "v2");
-		logger.log<logger::NONE>("========================================");
 	}
 }

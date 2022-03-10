@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 prompt_yn()
 {
@@ -9,17 +9,22 @@ prompt_yn()
     [ "$answer" = "n" ] || [ "$answer" = "N" ] || [ -z "$answer" ] && return 1
   done
 }
-
 rm bin/* 2>/dev/null
 mkdir -p bin
 mkdir -p log
-echo "Please enter the list of your sources directories separated by spaces:"
+if [ -f .setup ]
+then
+  . .setup
+  echo "Please enter the list of your sources directories separated by spaces (or nothing to keep current config):"
+else
+  echo "Please enter the list of your sources directories separated by spaces:"
+fi
 read dirs
 echo -n "Would you like to use the awesome cpp logging feature (y/N)? "
-EXTRA_DEFINE=""
+CPP_LOGGING=n
 if prompt_yn
 then
- EXTRA_DEFINE=" -D CPP_LOGGING"
+ CPP_LOGGING=y
  echo "When using monkey.sh the tester will generate a file containing"
  echo "cpp instructions to reproduce the same run without randomness"
  echo "which allow you to easily use gdb or any other compiler\n"
@@ -28,9 +33,13 @@ then
 else
  [ -f compile_log.sh ] && rm compile_log.sh
 fi
+
+[ -n "$dirs" ] && INCLUDE_DIRECTORIES="$dirs"
+
 cat >.setup <<EOF
-INCLUDE_DIRECTORIES=( $dirs )
-CFLAGS="-g3 -Wall -Werror -Wextra -std=c++98 $EXTRA_DEFINE"
+INCLUDE_DIRECTORIES=( ${INCLUDE_DIRECTORIES[@]} )
+CFLAGS="-g3 -Wall -Werror -Wextra -std=c++98"
+CPP_LOGGING=$CPP_LOGGING
 EOF
 
 

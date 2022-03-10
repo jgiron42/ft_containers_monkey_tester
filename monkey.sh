@@ -1,13 +1,25 @@
 #!/bin/bash
 
+set ""$(getopt -u --name="monkey.sh" ihs $@)
+
+MODE=""
+FILTER="cat"
+for arg in $@
+do
+  shift
+  [ $arg == "-i" ] && MODE=infinite_
+  [ $arg == "-s" ] && FILTER="tail -n50"
+  [ $arg == "-h" ] && { echo "Usage: $( basename $0 ) [-i] <container> [<seed>]"; echo " -i   toggle infinite mode" ; exit 0 ; }
+  [ $arg == "--" ] && { shift; break; }
+done
+
 if [ "$1" != "vector" -a "$1" != "stack" -a "$1" != "map" -a "$1" != "set" ]
 then
-  echo "Usage: $( basename $0 ) <container>" >&2
+  echo "Usage: $( basename $0 ) [-i] <container> [<seed>]" >&2
   exit 1
 fi
 
 C=$1
-shift
 
 [ ! -e .setup ] && ./setup.sh
 
@@ -29,28 +41,35 @@ check_last_change()
   echo $ret
 }
 
-if [ ! -x bin/ft_containers_$C ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/ft_containers_$C)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/ft_containers_$C)" ]
+if [  ! -x bin/fifodiff ] || [ "$(stat -c %Y srcs/fifodiff.cpp)" -ge "$(stat -c %Y bin/fifodiff)" ]
+then
+  echo "🐒 compiling fifodiff..."
+  clang++ $CFLAGS -D BEFORE_SIZE=-1 srcs/fifodiff.cpp -o bin/fifodiff || exit
+fi
+
+if [ "$MODE" == "infinite_" ]
+then
+  CFLAGS+=" -D NTEST=-1"
+elif [ "$CPP_LOGGING" == "y" ]
+then
+  CFLAGS+=" -D CPP_LOGGING"
+fi
+
+if [ ! -x bin/"$MODE"ft_containers_$C ] || [ "$(check_last_change)" -ge "$(stat -c %Y bin/"$MODE"ft_containers_$C)" -o "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/"$MODE"ft_containers_$C)" ]
 then
   echo "🐒 compiling ft... "
-  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $C | tr 'a-z' 'A-Z')  srcs/main.cpp -o bin/ft_containers_$C || exit
+  clang++ $CFLAGS -D NAMESPACE=ft -D MONKEY_$(echo $C | tr 'a-z' 'A-Z')  srcs/main.cpp -o bin/"$MODE"ft_containers_$C || exit
 fi
 
-if [  ! -x bin/std_containers_$C  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/std_containers_$C)" ]
+if [  ! -x bin/"$MODE"std_containers_$C  ] || [ "$(stat -c %Y srcs/main.cpp)" -ge "$(stat -c %Y bin/"$MODE"std_containers_$C)" ]
 then
   echo "🐒 compiling std... "
-  clang++ $CFLAGS -D NAMESPACE=std -D MONKEY_$(echo $C | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/std_containers_$C || exit
+  clang++ $CFLAGS -D NAMESPACE=std -D MONKEY_$(echo $C | tr 'a-z' 'A-Z') srcs/main.cpp -o bin/"$MODE"std_containers_$C || exit
 fi
 
-./bin/std_containers_$C $@ > .stdtmp
-./bin/ft_containers_$C $@ > .fttmp
-
-if diff -y  .stdtmp .fttmp > diff.log
-then
-  echo "🐒 no diff detected."
-  rm 2>/dev/null diff.log
-else
-  echo "🐒 output differ:"
-  cat diff.log | grep -B50 -A10 '  <\|  >'
-fi
-
-rm .stdtmp .fttmp 2>/dev/null
+rm .std .ft 2>/dev/null
+mkfifo .std .ft
+trap "pkill -9 fifodiff; rm .std .ft 2>/dev/null" INT
+echo "🐒 running... "
+./bin/"$MODE"std_containers_$C $@ >> .std | ./bin/"$MODE"ft_containers_$C $@ >> .ft | ./bin/fifodiff .std .ft | $FILTER
+rm .std .ft 2>/dev/null

@@ -350,7 +350,8 @@ void	test_map(int seed) {
 		logger.log<logger::CPP>("_P<C::iterator, C::iterator> range;");
 		logger.log<logger::CPP>("_P<C::key_type, C::mapped_type> val;");
 		for (int i = 0; NTEST == -1 || i < NTEST; i++) {
-			logger.log<logger::CPP>("std::cout << \"[GDB]============================> br \" << __FILE__ << \":\" << SSTR(__LINE__) << std::endl;");
+			if (!logger.log<logger::BREAKPOINT>(""))
+				logger.log<logger::NONE>("========================================");
 
 			int rand = std::rand() % sizeof(array) / sizeof(void (*)(C &, C &));
 			if (std::rand() % 2)
@@ -361,7 +362,6 @@ void	test_map(int seed) {
 			monkey::print_full_map<C, P>(m1, "m1");
 			logger.log<logger::TITLE>("printing m2:");
 			monkey::print_full_map<C, P>(m2, "m2");
-			logger.log<logger::NONE>("========================================");
 
 		}
 	}

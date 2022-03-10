@@ -8,6 +8,11 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
+#include <algorithm>
+#include <sstream>
+#ifndef CPP_LOG_PATH
+# define CPP_LOG_PATH "./log"
+#endif
 
 /**
  * convert any variable with "<<" overload to string using ostringstream
@@ -27,8 +32,9 @@ public:
 	int				block_depth;
 	bool			log_cpp;
 	bool			raw;
+	size_t			line;
 
-	logger() : block_depth(0), log_cpp(false), raw(false) {}
+	logger() : block_depth(0), log_cpp(false), raw(false), line(0) {}
 	~logger()
 	{
 		if (log_cpp)
@@ -41,7 +47,8 @@ public:
 		TITLE,
 		CPP,
 		CPP_LOG,
-		ERROR
+		ERROR,
+		BREAKPOINT
 	};
 
 	/**
@@ -95,11 +102,13 @@ public:
 		out += put_indent(block_depth);
 		out += s;
 		out += "\n";
+		this->line += std::count(out.begin(), out.end(), '\n');
 		for (int i = block_depth - 1; i >= 0; i--)
 		{
 			out += put_indent(i );
 			out += "}\n";
 		}
+
 		file << out;
 		file.flush();
 		return (out.length());
@@ -154,6 +163,14 @@ public:
 		return (ret);
 	};
 
+	template <>
+	int	log<BREAKPOINT>(std::string const &)
+	{
+		if (!log_cpp)
+			return (0);
+		this->log<NONE>("[GDB]===================================> br log.cpp:" + SSTR(this->line + 1));
+		return (this->log<CPP>("std::cout << \"[GDB]===================================> br \" << __FILE_NAME__ << \":\" <<  __LINE__  << std::endl;"));
+	}
 
 	/**
 	 * create a new block in the cpp file and place the plot in it
@@ -165,6 +182,7 @@ public:
 			return ;
 		this->log<CPP>("{");
 		this->log<CPP>("}");
+		this->line--;
 		this->block_depth++;
 	}
 
@@ -176,7 +194,10 @@ public:
 		if (!log_cpp)
 			return ;
 		if (this->block_depth > 0)
+		{
 			this->block_depth--;
+			this->line++;
+		}
 	}
 
 	/**
