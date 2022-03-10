@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 	logger.define("NAMESPACE", "ft");
 	logger.define("_P", "NAMESPACE::pair");
 	logger.include("includes.hpp");
+	logger.include("input_iterator.hpp");
 	logger.include("common.hpp");
 	logger.log<logger::CPP>("class logger logger;");
 	logger.create_function("int main()");

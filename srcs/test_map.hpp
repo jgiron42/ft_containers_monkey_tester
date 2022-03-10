@@ -67,10 +67,10 @@ namespace nstest_map {
 		logger.create_block();
 		logger.log<logger::CPP>("C m3(" + n1 + ");");
 		C v3(m1);
-		logger.log<logger::CPP>(n2 + " = " + n1 + ";");
-		m2 = m1;
-		logger.log<logger::CPP>(n1 + " = m3;");
-		m1 = v3;
+		logger.log<logger::CPP>(n1 + " = " + n2 + ";");
+		m1 = m2;
+		logger.log<logger::CPP>(n2 + " = m3;");
+		m2 = v3;
 		logger.pop_block();
 	}
 
@@ -82,7 +82,7 @@ namespace nstest_map {
 		logger.log<logger::CPP>("set = std::set<C::value_type>(" + n1 + ".begin(), " + n1 + ".end());");
 
 		m1 = C( input_iterator<typename std::set<typename C::value_type>::iterator>(s.begin()),  input_iterator<typename std::set<typename C::value_type>::iterator>(s.end()));
-		logger.log<logger::CPP>( n1 + " = C( input_iterator<typename std::set<typename C::value_type>::iterator>(set.begin()),  input_iterator<typename std::set<typename C::value_type>::iterator>(set.end()));");
+		logger.log<logger::CPP>( n1 + " = C( input_iterator<std::set<C::value_type>::iterator>(set.begin()),  input_iterator<std::set<C::value_type>::iterator>(set.end()));");
 //		print_full_map<C, P>(m1);
 	}
 
