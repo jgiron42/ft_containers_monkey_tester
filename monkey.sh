@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set ""$(getopt -u --name="monkey.sh" ihs $@)
+set -- ""$(getopt -u --name="monkey.sh" ihs $@)
 
 MODE=""
 FILTER="cat"
