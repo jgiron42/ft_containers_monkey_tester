@@ -71,7 +71,7 @@ namespace monkey
 	template <typename T>
 	typename T::iterator get_itn(T &c, int r, typename T::iterator min)
 	{
-		return (get_itn(c, r, min, std::__iterator_category(min)));
+		return (get_itn(c, r, min, typename std::iterator_traits<typename T::iterator>::iterator_category()));
 	}
 
 	/**
