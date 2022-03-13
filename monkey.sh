@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -- ""$(getopt -u --name="monkey.sh" ihs $@)
-
+set -- ""$(getopt ihs $@)
 MODE=""
 FILTER="cat"
 for arg in $@
@@ -12,6 +11,8 @@ do
   [ $arg == "-h" ] && { echo "Usage: $( basename $0 ) [-i] <container> [<seed>]"; echo " -i   toggle infinite mode" ; exit 0 ; }
   [ $arg == "--" ] && { shift; break; }
 done
+
+set -- ""$(echo $@)
 
 if [ "$1" != "vector" -a "$1" != "stack" -a "$1" != "map" -a "$1" != "set" ]
 then
