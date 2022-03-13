@@ -44,10 +44,10 @@ namespace monkey_vector {
 		logger.log<logger::NONE>("size: " + SSTR(v.size()));
 		logger.log<logger::NONE>("content:");
 		for (typename C::const_iterator i = v.begin(); i != v.end(); i++)
-			logger.log<logger::NONE>(" [" + SSTR(i->first) + "] -> [" + SSTR(i->second) + "]");
+			logger.log<logger::NONE>(" [" + SSTR(*i) + "]");
 		logger.log<logger::NONE>("reverse content:");
 		for (typename C::const_reverse_iterator i = v.rbegin(); i != v.rend(); i++)
-			logger.log<logger::NONE>(" [" + SSTR(i->first) + "] -> [" + SSTR(i->second) + "]");
+			logger.log<logger::NONE>(" [" + SSTR(*i) + "]");
 	}
 
 	template<class C>
@@ -56,10 +56,10 @@ namespace monkey_vector {
 		logger.create_block();
 		logger.log<logger::CPP>("C v3(" + n1 + ");");
 		C v3(v1);
-		print_full_vect(v1);
+		print_full_vect(v1, n1);
 		logger.log<logger::CPP>(n1 + ".clear();");
 		v1.clear();
-		print_full_vect(v3);
+		print_full_vect(v3, "v3");
 		logger.log<logger::CPP>("v3.clear();");
 		v3.clear();
 		logger.pop_block();
