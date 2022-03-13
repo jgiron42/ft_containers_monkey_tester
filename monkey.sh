@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/bash 
 
-set -- ""$(getopt ihs $@)
+set -- $(getopt ihs $@)
 MODE=""
 FILTER="cat"
 for arg in $@
@@ -9,10 +9,10 @@ do
   [ $arg == "-i" ] && MODE=infinite_
   [ $arg == "-s" ] && FILTER="tail -n50"
   [ $arg == "-h" ] && { echo "Usage: $( basename $0 ) [-i] <container> [<seed>]"; echo " -i   toggle infinite mode" ; exit 0 ; }
-  [ $arg == "--" ] && { shift; break; }
+  [ $arg == "--" ] && { break; }
 done
 
-set -- ""$(echo $@)
+set -- $(echo $@)
 
 if [ "$1" != "vector" -a "$1" != "stack" -a "$1" != "map" -a "$1" != "set" ]
 then
