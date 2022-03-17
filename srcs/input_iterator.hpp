@@ -95,7 +95,7 @@ public:
 		if (!this->valid)
 			throw invalid_inputit();
 		input_iterator ret(*this);
-		++this;
+		++(*this);
 		return(ret);
 	}
 };
