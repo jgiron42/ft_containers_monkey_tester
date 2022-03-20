@@ -38,7 +38,7 @@ namespace monkey_vector {
 
 	template<class C>
 	void print_full_vect(const C &v, const std::string &name) {
-		logger.log<logger::CPP>("monkey::print_full_map<C, _P>(" + name + ", \"" + name + "\");");
+		logger.log<logger::CPP>("monkey::print_full_vect<C>(" + name + ", \"" + name + "\");");
 
 		logger.log<logger::NONE>("empty: " + SSTR(v.empty()));
 		logger.log<logger::NONE>("size: " + SSTR(v.size()));

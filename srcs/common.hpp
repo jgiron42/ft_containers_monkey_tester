@@ -20,6 +20,19 @@ extern class logger logger;
 
 namespace monkey
 {
+	template<class C>
+	void print_full_vect(const C &v, const std::string &name) {
+		logger.log<logger::CPP>("monkey::print_full_vect<C>(" + name + ", \"" + name + "\");");
+		logger.log<logger::NONE>("empty: " + SSTR(v.empty()));
+		logger.log<logger::NONE>("size: " + SSTR(v.size()));
+		logger.log<logger::NONE>("content:");
+		for (typename C::const_iterator i = v.begin(); i != v.end(); i++)
+			logger.log<logger::NONE>(" [" + SSTR(*i) + "]");
+		logger.log<logger::NONE>("reverse content:");
+		for (typename C::const_reverse_iterator i = v.rbegin(); i != v.rend(); i++)
+			logger.log<logger::NONE>(" [" + SSTR(*i) + "]");
+	}
+
 	template<class it>
 	it add_iterator(it i, int n) {
 		while (n > 0) {

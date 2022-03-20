@@ -77,13 +77,12 @@ namespace monkey_map {
 	template<class C, template<class, class> class P>
 	void test_construct(const std::string &n1, C &m1, const std::string &,  C &) {
 		logger.log<logger::TITLE>("test_construct:");
-
+		logger.create_block();
 		const std::set<typename C::value_type> s(m1.begin(), m1.end());
-		logger.log<logger::CPP>("set = std::set<C::value_type>(" + n1 + ".begin(), " + n1 + ".end());");
-
+		logger.log<logger::CPP>("std::set<C::value_type> set(" + n1 + ".begin(), " + n1 + ".end());");
 		m1 = C( input_iterator<typename std::set<typename C::value_type>::iterator>(s.begin()),  input_iterator<typename std::set<typename C::value_type>::iterator>(s.end()));
 		logger.log<logger::CPP>( n1 + " = C( input_iterator<std::set<C::value_type>::iterator>(set.begin()),  input_iterator<std::set<C::value_type>::iterator>(set.end()));");
-//		monkey::print_full_map<C, P>(m1);
+		logger.pop_block();
 	}
 
 	template<class C, template<class, class> class P>
@@ -345,7 +344,6 @@ void	test_map(int seed) {
 		logger.log<logger::CPP>("input_iterator<C::iterator> inputit1;");
 		logger.log<logger::CPP>("C::iterator it2;");
 		logger.log<logger::CPP>("input_iterator<C::iterator> inputit2;");
-		logger.log<logger::CPP>("std::set<C::value_type> set;");
 		logger.log<logger::CPP>("_P<C::iterator, bool> pair_it_bool;");
 		logger.log<logger::CPP>("_P<C::iterator, C::iterator> range;");
 		logger.log<logger::CPP>("_P<C::key_type, C::mapped_type> val;");
