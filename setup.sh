@@ -27,7 +27,7 @@ then
  CPP_LOGGING=y
  echo "When using monkey.sh the tester will generate a file containing"
  echo "cpp instructions to reproduce the same run without randomness"
- echo "which allow you to easily use gdb or any other compiler\n"
+ echo "which allow you to easily use gdb or any other debugger\n"
  echo "Use compile_log.sh to compile the generated file\n"
  [ ! -f compile_log.sh ] && cp .compile_log.sh compile_log.sh
 else
@@ -38,7 +38,7 @@ fi
 
 cat >.setup <<EOF
 INCLUDE_DIRECTORIES=( ${INCLUDE_DIRECTORIES[@]} )
-CFLAGS="-g3 -Wall -Werror -Wextra -std=c++98"
+CFLAGS+=" -g3 -Wall -Werror -Wextra -std=c++98"
 CPP_LOGGING=$CPP_LOGGING
 EOF
 
