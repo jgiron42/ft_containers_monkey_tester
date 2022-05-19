@@ -41,6 +41,7 @@ then
 fi
 
 C=$1
+shift
 
 [ ! -e .setup ] && ./setup.sh
 

@@ -18,6 +18,7 @@
 
 extern class logger logger;
 
+
 namespace monkey
 {
 	template<class C>
@@ -68,26 +69,12 @@ namespace monkey
 	}
 
 	template <typename T>
-	typename T::iterator get_itn(T &c, int r, typename T::iterator min, ft::forward_iterator_tag)
-	{
-		return (get_itn(c, r, min, std::forward_iterator_tag()));
-	}
-
-
-	template <typename T>
 	typename T::iterator get_itn(T &c, int r, typename T::iterator min, std::random_access_iterator_tag)
 	{
 		if (min == c.end())
 			return (c.end());
 		return (min + (c.end() - min) % r);
 	}
-
-	template <typename T>
-	typename T::iterator get_itn(T &c, int r, typename T::iterator min, ft::random_access_iterator_tag)
-	{
-		return (get_itn(c, r, min, std::random_access_iterator_tag()));
-	}
-
 
 	/**
 	 * @def get an iterator at a random position of the container c after min based on the random number r
