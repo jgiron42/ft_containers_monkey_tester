@@ -21,10 +21,10 @@ class	input_iterator
 	base_it	it;
 	bool	valid;
 public:
-	typedef typename base_it::value_type value_type;
-	typedef typename base_it::pointer pointer;
-	typedef typename base_it::reference reference;
-	typedef typename base_it::difference_type difference_type;
+	typedef typename std::iterator_traits<base_it>::value_type value_type;
+	typedef typename std::iterator_traits<base_it>::pointer pointer;
+	typedef typename std::iterator_traits<base_it>::reference reference;
+	typedef typename std::iterator_traits<base_it>::difference_type difference_type;
 	typedef typename std::input_iterator_tag iterator_category;
 	std::set<input_iterator*> equivalents;
 	input_iterator() : it(), valid(true), equivalents() {}
@@ -69,12 +69,12 @@ public:
 	friend bool operator!=(input_iterator const &l, input_iterator const &r){
 		return (l.it != r.it);
 	}
-	const typename base_it::value_type &operator*() const {
+	const typename std::iterator_traits<base_it>::value_type &operator*() const {
 		if (!this->valid)
 			throw invalid_inputit();
 		return (*it);
 	}
-	const typename base_it::pointer operator->() const {
+	const typename std::iterator_traits<base_it>::pointer operator->() const {
 		if (!this->valid)
 			throw invalid_inputit();
 		return (&*it);
