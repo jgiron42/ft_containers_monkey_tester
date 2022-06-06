@@ -258,7 +258,6 @@ namespace monkey_vector {
 		unsigned int rand;
 		typename C::iterator it1;
 		typename C::iterator it2;
-		typename C::iterator ret;
 		for (int i = 0; i < 5; i++) {
 			rand = std::rand();
 			it1 = monkey::get_itn(v1, rand);
