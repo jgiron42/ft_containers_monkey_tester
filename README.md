@@ -1,4 +1,4 @@
-# ft_containers_monkey_tester
+# ft_containers_monkey_tester (personal project)
 
 ![monke](https://upload.wikimedia.org/wikipedia/commons/f/f1/Monkey-typing.jpg)
 
