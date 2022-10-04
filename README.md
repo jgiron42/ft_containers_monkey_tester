@@ -2,7 +2,7 @@
 
 ![monke](https://upload.wikimedia.org/wikipedia/commons/f/f1/Monkey-typing.jpg)
 
-This repo is a tester for the 42 ft_containers project. The tester generate two programs (std and ft) with a certain amount of random test in both then compare the two outputs
+This repo is a tester based on the [fuzzing](https://en.wikipedia.org/wiki/Fuzzing) technique for the 42 ft_containers project. The tester generate two programs (std and ft) with a certain amount of random test in both then compare the two outputs
 
 ## monkey.sh
 
